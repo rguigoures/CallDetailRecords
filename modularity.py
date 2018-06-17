@@ -77,8 +77,31 @@ class cdr_graph():
         return cluster_adjacency_matrix
 
     def information_theoretical_coclustering(self, graph, k):
-        clusters = self.random_partition(list(g.graph.nodes), k)
+        clusters = self.random_partition([node-1 for node in g.graph.nodes], k)
         cluster_adjacency_matrix = self.build_cluster_adjacency_matrix(graph, clusters)
+        print cluster_adjacency_matrix
+        clustering_mi = self.compute_mutual_information(cluster_adjacency_matrix)
+        improvement = 1
+        while improvement > 0.:
+            for cluster in clusters:
+                for i in range(len(cluster)):
+                    node = cluster.pop(0)
+                    best_mi = 0
+                    for j in range(k):
+                        clusters[j].append(node)
+                        cluster_adjacency_matrix = self.build_cluster_adjacency_matrix(graph, clusters)
+                        mi = self.compute_mutual_information(cluster_adjacency_matrix)
+                        if best_mi < mi:
+                            best_mi = mi
+                            best_cluster = j
+                        del clusters[j][-1]
+                    clusters[best_cluster].append(node)
+            cluster_adjacency_matrix = self.build_cluster_adjacency_matrix(graph, clusters)
+            improvement = self.compute_mutual_information(cluster_adjacency_matrix) - clustering_mi
+            clustering_mi = self.compute_mutual_information(cluster_adjacency_matrix)
+            print clustering_mi, clusters
+        print cluster_adjacency_matrix
+
 
 
 if __name__ == '__main__':
@@ -86,9 +109,12 @@ if __name__ == '__main__':
     print 'loading data'
     g = cdr_graph(cdr_data)
     print 'loading graph'
+    '''
     clusters, clustering_modularity = g.partition_graph(g.graph)
     print 'performed 1 partition'
     for cluster in clusters:
         if list(cluster) > 1:
             print cluster
     print clustering_modularity
+    '''
+    g.information_theoretical_coclustering(nx.to_numpy_matrix(g.graph), k=10)
