@@ -3,11 +3,12 @@ import numpy as np
 #import pystan
 
 
-def process_data(file_name):
+def process_data(file_name, truncate=False):
     data = pandas.read_csv(file_name).fillna(0)
     data = data[data.countrycode != 0]
     data = data[data.countrycode != 39]
-    data = data[data.CellID < 500]
+    if truncate:
+        data = data[data.CellID < truncate]
     aggregated_data = data.groupby(['CellID', 'countrycode'])['smsin'].agg('sum')
     aggregated_data = aggregated_data.to_frame()
     aggregated_data.reset_index(level=aggregated_data.index.names, inplace=True)

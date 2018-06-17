@@ -1,6 +1,7 @@
 import unittest
 import pandas
-import data_processing
+from utils import data_processing
+
 
 class MyTestCase(unittest.TestCase):
 
