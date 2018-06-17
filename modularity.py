@@ -76,10 +76,9 @@ class cdr_graph():
             cluster_adjacency_matrix[:, i] = row_cluster_adjacency_matrix[:, cluster].sum(axis=1)
         return cluster_adjacency_matrix
 
-    def information_theoretical_coclustering(self, graph, k):
-        clusters = self.random_partition([node-1 for node in g.graph.nodes], k)
-        cluster_adjacency_matrix = self.build_cluster_adjacency_matrix(graph, clusters)
-        print cluster_adjacency_matrix
+    def information_theoretical_coclustering(self, graph_matrix, k):
+        clusters = self.random_partition([node-1 for node in self.graph.nodes], k)
+        cluster_adjacency_matrix = self.build_cluster_adjacency_matrix(graph_matrix, clusters)
         clustering_mi = self.compute_mutual_information(cluster_adjacency_matrix)
         improvement = 1
         while improvement > 0.:
@@ -89,18 +88,17 @@ class cdr_graph():
                     best_mi = 0
                     for j in range(k):
                         clusters[j].append(node)
-                        cluster_adjacency_matrix = self.build_cluster_adjacency_matrix(graph, clusters)
+                        cluster_adjacency_matrix = self.build_cluster_adjacency_matrix(graph_matrix, clusters)
                         mi = self.compute_mutual_information(cluster_adjacency_matrix)
                         if best_mi < mi:
                             best_mi = mi
                             best_cluster = j
                         del clusters[j][-1]
                     clusters[best_cluster].append(node)
-            cluster_adjacency_matrix = self.build_cluster_adjacency_matrix(graph, clusters)
+            cluster_adjacency_matrix = self.build_cluster_adjacency_matrix(graph_matrix, clusters)
             improvement = self.compute_mutual_information(cluster_adjacency_matrix) - clustering_mi
             clustering_mi = self.compute_mutual_information(cluster_adjacency_matrix)
-            print clustering_mi, clusters
-        print cluster_adjacency_matrix
+        return clusters, cluster_adjacency_matrix
 
 
 
