@@ -3,3 +3,6 @@ data/*
 .idea/*
 .DS_Store
 *.pyc
+*.geojson
+*.pkl
+*.png
