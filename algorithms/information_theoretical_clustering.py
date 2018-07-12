@@ -93,8 +93,7 @@ class InformationTheoreticalClustering(object):
         mat = np.zeros(data_matrix.shape)
         for i, cell_cluster in enumerate(cell_clusters):
             for j, country_cluster in enumerate(country_clusters):
-                mat[np.ix_(cell_cluster, country_cluster)] = cluster_matrix[i,j] \
-                                                             / float(len(country_cluster)*len(cell_cluster))
+                mat[np.ix_(cell_cluster, country_cluster)] = cluster_matrix[i,j]
         mat /= mat.sum()
         return mat
 
