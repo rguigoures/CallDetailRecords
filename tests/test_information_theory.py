@@ -22,11 +22,23 @@ class MyTestCase(unittest.TestCase):
         expected_mi = 0
         self.assertAlmostEqual(mi, expected_mi)
 
-    def test_cluster_matrix(self):
-        A = np.array([[10, 1, 0], [0, 12, 0], [0, 0, 10]])
-        B = InformationTheoreticalClustering.build_cluster_adjacency_matrix(A, [[0, 1], [2]])
-        expected_B = np.array([[23, 0], [0, 10]])
-        self.assertEqual(np.array_equal(B, expected_B), True)
+    def test_build_cluster_join_probability_matrix(self):
+        matrix = np.array([[1, 1, 1], [1, 1, 1], [2, 0, 2], [2, 0, 2]])
+        dimension = 'cell'
+        clusters = [[0, 1], [2, 3]]
+        expected_mat = [[1/7., 1/7., 1/7.], [2/7., 0, 2/7.]]
+        mat = InformationTheoreticalClustering.build_cluster_join_probability_matrix(matrix, clusters, dimension)
+        self.assertEqual(np.array_equal(mat, expected_mat), True)
+
+    def test_build_partionned_probability_matrix(self):
+        data_matrix = np.array([[1, 1, 1], [1, 1, 1], [2, 0, 2], [2, 0, 2]])
+        cluster_matrix = np.array([[4, 2], [8, 0]])
+        cell_clusters = [[0, 1], [2, 3]]
+        country_clusters = [[0, 2], [1]]
+        expected_mat = np.array([[1/13., 1/26., 1/13.], [1/13., 1/26., 1/13.], [2/13., 0, 2/13.], [2/13., 0, 2/13.]])
+        mat = InformationTheoreticalClustering.build_partionned_probability_matrix(data_matrix, cluster_matrix,
+                                                                                   cell_clusters, country_clusters)
+        self.assertEqual(np.array_equal(mat, expected_mat), True)
 
 if __name__ == '__main__':
     unittest.main()
